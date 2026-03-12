@@ -23,4 +23,6 @@ jobs:
       - run: pnpm test:unit
       - run: pnpm test:integration
       - run: pnpm test:realtime
+      - run: pnpm --filter @cos/web exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
       - run: pnpm build
