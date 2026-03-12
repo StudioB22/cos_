@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #dbfffa;
+  background:
+    radial-gradient(circle at top, rgba(103, 182, 255, 0.18), transparent 45%),
+    radial-gradient(circle at bottom, rgba(99, 255, 218, 0.16), transparent 50%),
+    #02141b;
+  font-family: 'VT323', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #02141b;
+  color: #dbfffa;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.retro-panel {
+  border: 1px solid rgba(99, 255, 218, 0.32);
+  background: linear-gradient(180deg, rgba(7, 38, 51, 0.92), rgba(3, 21, 28, 0.95));
+  box-shadow:
+    0 0 0 1px rgba(103, 182, 255, 0.14),
+    0 18px 50px rgba(0, 0, 0, 0.32);
+}
+
+.retro-panel__title {
+  border-bottom: 1px solid rgba(99, 255, 218, 0.2);
+  background: linear-gradient(90deg, rgba(99, 255, 218, 0.12), rgba(103, 182, 255, 0.08));
+  padding: 0.55rem 0.85rem;
+  font-size: 1.8rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #63ffda;
+}
+
+.retro-panel__body {
+  padding: 1rem;
+}
+
+.retro-button {
+  border-width: 1px;
+  padding: 0.55rem 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.retro-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.retro-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.retro-input {
+  width: 100%;
+  border: 1px solid rgba(103, 182, 255, 0.36);
+  background: rgba(2, 20, 27, 0.9);
+  color: #dbfffa;
+  padding: 0.7rem 0.8rem;
+  outline: none;
+}
+
+.retro-input:focus {
+  border-color: rgba(99, 255, 218, 0.8);
+  box-shadow: 0 0 0 1px rgba(99, 255, 218, 0.3);
+}
+
+.retro-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.retro-table th,
+.retro-table td {
+  border: 1px solid rgba(103, 182, 255, 0.24);
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.retro-table th {
+  width: 34%;
+  color: #63ffda;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blink {
+  animation: blink 1s steps(1) infinite;
+}
+
+.room-link {
+  display: grid;
+  gap: 0.15rem;
+  border: 1px solid rgba(103, 182, 255, 0.24);
+  background: rgba(103, 182, 255, 0.05);
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.room-link:hover,
+.room-link--active {
+  border-color: rgba(99, 255, 218, 0.58);
+  background: rgba(99, 255, 218, 0.12);
+  transform: translateX(2px);
+}
+
+.chat-history {
+  min-height: 22rem;
+  max-height: 56vh;
+  overflow-y: auto;
+  border: 1px solid rgba(103, 182, 255, 0.18);
+  background: rgba(1, 14, 19, 0.82);
+  padding: 0.8rem;
+}
+
+.chat-line {
+  border-bottom: 1px dashed rgba(103, 182, 255, 0.18);
+  padding: 0.65rem 0;
+}
+
+.chat-line--system {
+  color: rgba(219, 255, 250, 0.62);
+}
+
+.smiley-chip {
+  border: 1px solid rgba(103, 182, 255, 0.3);
+  background: rgba(103, 182, 255, 0.06);
+  color: #dbfffa;
+  padding: 0.3rem 0.55rem;
+}
+
+.smiley-chip--active,
+.smiley-chip:hover {
+  border-color: rgba(99, 255, 218, 0.52);
+  background: rgba(99, 255, 218, 0.12);
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}

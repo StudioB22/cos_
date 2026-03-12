@@ -59,6 +59,8 @@ export const roomSchema = z.object({
   desc: z.string(),
   type: roomTypeSchema,
   ownerAliasId: z.string().nullable(),
+  ownerAlias: z.string().nullable(),
+  memberAliases: z.array(z.string()),
   isMember: z.boolean(),
 });
 
