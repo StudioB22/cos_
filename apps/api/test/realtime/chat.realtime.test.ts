@@ -66,13 +66,28 @@ describe('realtime chat and private-room sad path', () => {
       betaSocket.on('connect_error', reject);
     });
 
-    const joinGeneral = await new Promise<{ ok: boolean }>((resolve) => {
+    const joinGeneral = await new Promise<{
+      ok: boolean;
+      data?: { messages: Array<{ kind: string; content: string }> };
+    }>((resolve) => {
       alphaSocket.emit('room:join', { alias: 'Alpha', roomName: 'general' }, resolve);
     });
     expect(joinGeneral.ok).toBe(true);
+    expect(joinGeneral.data?.messages.at(-1)).toMatchObject({
+      kind: 'system',
+      content: 'Alpha entre dans le salon.',
+    });
 
-    await new Promise<{ ok: boolean }>((resolve) => {
+    const betaJoin = await new Promise<{
+      ok: boolean;
+      data?: { messages: Array<{ kind: string; content: string }> };
+    }>((resolve) => {
       betaSocket.emit('room:join', { alias: 'Beta', roomName: 'general' }, resolve);
+    });
+    expect(betaJoin.ok).toBe(true);
+    expect(betaJoin.data?.messages.at(-1)).toMatchObject({
+      kind: 'system',
+      content: 'Beta entre dans le salon.',
     });
 
     const messagePromise = new Promise<{ content: string }>((resolve) => {
@@ -95,6 +110,16 @@ describe('realtime chat and private-room sad path', () => {
     expect(sendResult.ok).toBe(true);
     await expect(messagePromise).resolves.toMatchObject({ content: 'hello public room' });
 
+    const unauthorizedIgnoreList = await new Promise<{
+      ok: boolean;
+      error?: { code: string };
+    }>((resolve) => {
+      alphaSocket.emit('ignore:list', { alias: 'Beta' }, resolve);
+    });
+
+    expect(unauthorizedIgnoreList.ok).toBe(false);
+    expect(unauthorizedIgnoreList.error?.code).toBe('ALIAS_NOT_FOUND');
+
     const privateJoin = await new Promise<{
       ok: boolean;
       error?: { code: string };
@@ -105,7 +130,26 @@ describe('realtime chat and private-room sad path', () => {
     expect(privateJoin.ok).toBe(false);
     expect(privateJoin.error?.code).toBe('ROOM_FORBIDDEN');
 
-    alphaSocket.disconnect();
+    const leaveState = new Promise<{ messages: Array<{ kind: string; content: string }> }>((resolve) => {
+      alphaSocket.on('room:state', (payload) => {
+        const lastMessage = payload.messages.at(-1);
+        if (lastMessage?.kind === 'system' && lastMessage.content === 'Beta a quitte le salon.') {
+          resolve(payload);
+        }
+      });
+    });
+
     betaSocket.disconnect();
+
+    await expect(leaveState).resolves.toMatchObject({
+      messages: expect.arrayContaining([
+        expect.objectContaining({
+          kind: 'system',
+          content: 'Beta a quitte le salon.',
+        }),
+      ]),
+    });
+
+    alphaSocket.disconnect();
   });
 });

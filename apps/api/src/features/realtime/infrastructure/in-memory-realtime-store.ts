@@ -5,6 +5,18 @@ interface SocketState {
   roomName: string | null;
 }
 
+interface LeaveRoomResult {
+  alias: string | null;
+  roomName: string | null;
+  lastAliasLeftRoom: boolean;
+}
+
+interface JoinRoomResult {
+  previousRoomName: string | null;
+  previousRoomLastLeave: boolean;
+  firstJoinInRoom: boolean;
+}
+
 const appendBounded = <T>(current: T[], item: T, limit = 80): T[] => {
   const next = [...current, item];
   return next.slice(-limit);
@@ -20,6 +32,15 @@ export class InMemoryRealtimeStore {
 
   getSocketState(socketId: string): SocketState {
     return this.socketState.get(socketId) ?? { alias: null, roomName: null };
+  }
+
+  private roomContainsAlias(roomName: string, alias: string): boolean {
+    const room = this.roomOccupants.get(roomName);
+    if (!room) {
+      return false;
+    }
+
+    return [...room.values()].includes(alias);
   }
 
   assignSocketAlias(socketId: string, alias: string) {
@@ -42,13 +63,17 @@ export class InMemoryRealtimeStore {
     this.aliasSockets.set(alias, sockets);
   }
 
-  joinRoom(socketId: string, alias: string, roomName: string): string | null {
+  joinRoom(socketId: string, alias: string, roomName: string): JoinRoomResult {
     const current = this.getSocketState(socketId);
     const previousRoomName = current.roomName;
+    let previousRoomLastLeave = false;
 
     if (previousRoomName && previousRoomName !== roomName) {
-      this.leaveRoom(socketId);
+      const leaveResult = this.leaveRoom(socketId);
+      previousRoomLastLeave = leaveResult.lastAliasLeftRoom;
     }
+
+    const firstJoinInRoom = !this.roomContainsAlias(roomName, alias);
 
     this.assignSocketAlias(socketId, alias);
 
@@ -58,27 +83,40 @@ export class InMemoryRealtimeStore {
 
     this.socketState.set(socketId, { alias, roomName });
 
-    return previousRoomName;
+    return {
+      previousRoomName,
+      previousRoomLastLeave,
+      firstJoinInRoom,
+    };
   }
 
-  leaveRoom(socketId: string): string | null {
+  leaveRoom(socketId: string): LeaveRoomResult {
     const current = this.getSocketState(socketId);
 
     if (!current.roomName) {
-      return null;
+      return {
+        alias: current.alias,
+        roomName: null,
+        lastAliasLeftRoom: false,
+      };
     }
 
     const room = this.roomOccupants.get(current.roomName);
     room?.delete(socketId);
+    const lastAliasLeftRoom = current.alias ? !this.roomContainsAlias(current.roomName, current.alias) : false;
     if (room && room.size === 0) {
       this.roomOccupants.delete(current.roomName);
     }
 
     this.socketState.set(socketId, { alias: current.alias, roomName: null });
-    return current.roomName;
+    return {
+      alias: current.alias,
+      roomName: current.roomName,
+      lastAliasLeftRoom,
+    };
   }
 
-  disconnect(socketId: string): string | null {
+  disconnect(socketId: string): LeaveRoomResult {
     const current = this.getSocketState(socketId);
     const previousRoom = this.leaveRoom(socketId);
 

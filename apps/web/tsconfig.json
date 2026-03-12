@@ -1,10 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": ["src/*"],
+      "@cos/shared": ["../../packages/shared/src/index.ts"],
+      "@cos/shared/*": ["../../packages/shared/src/*"]
+    }
   },
   "include": ["src", "vite.config.ts", "playwright.config.ts", "tailwind.config.ts"]
 }

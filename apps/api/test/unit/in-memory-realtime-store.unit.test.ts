@@ -33,4 +33,18 @@ describe('InMemoryRealtimeStore', () => {
     expect(store.removeIgnore('Benoit', 'SpamBot')).toEqual([]);
     expect(store.isIgnoring('Benoit', 'SpamBot')).toBe(false);
   });
+
+  it('tracks first join and last leave transitions for room system messages', () => {
+    const store = new InMemoryRealtimeStore();
+
+    const firstJoin = store.joinRoom('socket-a', 'Benoit', 'general');
+    const secondJoinSameAlias = store.joinRoom('socket-b', 'Benoit', 'general');
+    const firstLeave = store.leaveRoom('socket-a');
+    const lastLeave = store.leaveRoom('socket-b');
+
+    expect(firstJoin.firstJoinInRoom).toBe(true);
+    expect(secondJoinSameAlias.firstJoinInRoom).toBe(false);
+    expect(firstLeave.lastAliasLeftRoom).toBe(false);
+    expect(lastLeave.lastAliasLeftRoom).toBe(true);
+  });
 });

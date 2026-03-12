@@ -8,7 +8,7 @@ COPY package.json pnpm-workspace.yaml tsconfig.base.json ./
 COPY apps/api/package.json apps/api/package.json
 COPY packages/shared/package.json packages/shared/package.json
 
-RUN corepack prepare pnpm@10.9.4 --activate \
+RUN corepack prepare pnpm@10.30.3 --activate \
   && pnpm install --filter @cos/api --filter @cos/shared --frozen-lockfile=false
 
 COPY apps/api apps/api
