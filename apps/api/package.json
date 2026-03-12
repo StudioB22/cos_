@@ -1,0 +1,42 @@
+{
+  "name": "@cos/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "lint": "eslint src test --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:unit": "vitest run --config vitest.config.ts --project unit",
+    "test:integration": "vitest run --config vitest.config.ts --project integration",
+    "test:realtime": "vitest run --config vitest.config.ts --project realtime",
+    "db:migrate": "tsx src/shared/db/cli.ts migrate",
+    "db:seed": "tsx src/shared/db/cli.ts seed"
+  },
+  "dependencies": {
+    "@cos/shared": "workspace:*",
+    "better-sqlite3": "^11.8.1",
+    "cookie": "^1.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "socket.io": "^4.8.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/supertest": "^6.0.3",
+    "socket.io-client": "^4.8.1",
+    "supertest": "^7.1.0",
+    "tsx": "^4.19.3",
+    "tsup": "^8.4.0",
+    "vitest": "^3.0.8"
+  }
+}
