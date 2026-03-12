@@ -157,6 +157,10 @@ export const ignoreSocketSchema = z.object({
   ignoredAlias: z.string().trim().min(2).max(24),
 });
 
+export const ignoreStateSocketSchema = z.object({
+  alias: z.string().trim().min(2).max(24),
+});
+
 export type RoomType = z.infer<typeof roomTypeSchema>;
 export type RoomMembershipRole = z.infer<typeof roomMembershipRoleSchema>;
 export type SmileyCode = z.infer<typeof smileyCodeSchema>;
@@ -179,3 +183,4 @@ export type JoinRoomSocket = z.infer<typeof joinRoomSocketSchema>;
 export type ChatSendSocket = z.infer<typeof chatSendSocketSchema>;
 export type DmSendSocket = z.infer<typeof dmSendSocketSchema>;
 export type IgnoreSocket = z.infer<typeof ignoreSocketSchema>;
+export type IgnoreStateSocket = z.infer<typeof ignoreStateSocketSchema>;

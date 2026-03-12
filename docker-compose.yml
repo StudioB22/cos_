@@ -1,0 +1,17 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      API_PORT: 3001
+      SQLITE_PATH: /app/apps/api/data/cos.sqlite
+      COOKIE_SECRET: docker-secret-please-change
+      ALLOWED_ORIGIN: http://localhost:5173
+    volumes:
+      - cos_sqlite:/app/apps/api/data
+
+volumes:
+  cos_sqlite:

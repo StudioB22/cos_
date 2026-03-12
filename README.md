@@ -40,3 +40,9 @@ pnpm dev
 - Backend target: Render
 
 Use `render.yaml` for the API service and `vercel.json` for SPA routing.
+
+## Git workflow
+- One task = one branch
+- Frequent small commits inside the task branch
+- A task is considered complete when the branch is ready for a pull request
+- GitHub owner target: `https://github.com/StudioB22`

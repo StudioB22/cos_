@@ -3,6 +3,7 @@ import {
   chatSendSocketSchema,
   dmSendSocketSchema,
   ignoreSocketSchema,
+  ignoreStateSocketSchema,
   joinRoomSocketSchema,
 } from '@cos/shared';
 import cookie from 'cookie';
@@ -192,6 +193,16 @@ export const registerRealtimeHandlers = (io: Server, context: AppContext) => {
           ignoredAlias: input.ignoredAlias,
         });
 
+        ack({ ok: true, data: { ignoredAliases } });
+      } catch (error) {
+        ack(toSocketError(error));
+      }
+    });
+
+    socket.on('ignore:list', (payload, ack: SocketAck<{ ignoredAliases: string[] }>) => {
+      try {
+        const input = ignoreStateSocketSchema.parse(payload);
+        const ignoredAliases = context.realtimeService.getIgnoredAliases(input.alias);
         ack({ ok: true, data: { ignoredAliases } });
       } catch (error) {
         ack(toSocketError(error));

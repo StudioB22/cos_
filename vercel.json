@@ -3,14 +3,13 @@
   "framework": null,
   "buildCommand": "pnpm --filter @cos/web build",
   "outputDirectory": "apps/web/dist",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/app/(.*)",
-      "destination": "/index.html"
+      "handle": "filesystem"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/.*",
+      "dest": "/index.html"
     }
   ]
 }

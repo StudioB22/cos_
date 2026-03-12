@@ -1,13 +1,6 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 
-import {
-  type Alias,
-  type DirectMessage,
-  type RoomMessage,
-  type RoomState,
-  type Salon,
-  smileyCodes,
-} from '@cos/shared';
+import { type DirectMessage, type RoomMessage, type RoomState, smileyCodes } from '@cos/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Socket } from 'socket.io-client';
 
@@ -54,6 +47,7 @@ export const ChatWorkspace = () => {
   const [activeDmAlias, setActiveDmAlias] = useState<string | null>(null);
   const [dmDraft, setDmDraft] = useState('');
   const [dmThreads, setDmThreads] = useState<Record<string, DirectMessage[]>>({});
+  const [socketRevision, setSocketRevision] = useState(0);
 
   const deferredInviteQuery = useDeferredValue(inviteQuery);
 
@@ -112,6 +106,15 @@ export const ChatWorkspace = () => {
     socketRef.current = socket;
     socket.connect();
 
+    socket.on('connect', () => {
+      setSocketRevision((current) => current + 1);
+      void emitWithAck<{ ignoredAliases: string[] }>(socket, 'ignore:list', {
+        alias: activeAliasPseudo,
+      })
+        .then((result) => setIgnoredAliases(result.ignoredAliases))
+        .catch((error: unknown) => setWorkspaceError(humanizeError(error)));
+    });
+
     socket.on('room:state', (nextState: RoomState) => {
       setRoomState(nextState);
     });
@@ -150,7 +153,7 @@ export const ChatWorkspace = () => {
 
   useEffect(() => {
     const socket = socketRef.current;
-    if (!socket || !activeAliasPseudo || !selectedRoomName || !socket.connected) {
+    if (!socket || !activeAliasPseudo || !selectedRoomName) {
       return;
     }
 
@@ -165,7 +168,7 @@ export const ChatWorkspace = () => {
       .catch((error: unknown) => {
         setWorkspaceError(humanizeError(error));
       });
-  }, [activeAliasPseudo, selectedRoomName, roomsQuery.dataUpdatedAt]);
+  }, [activeAliasPseudo, selectedRoomName, roomsQuery.dataUpdatedAt, socketRevision]);
 
   const aliasDirectoryQuery = useQuery({
     queryKey: ['alias-directory', deferredInviteQuery],

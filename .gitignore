@@ -14,5 +14,4 @@ apps/api/data
 *.sqlite-wal
 playwright-report
 test-results
-pnpm-lock.yaml
 .vercel

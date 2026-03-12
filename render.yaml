@@ -3,7 +3,7 @@ services:
     name: cos-old-school-api
     runtime: node
     rootDir: .
-    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @cos/api build
+    buildCommand: pnpm install --frozen-lockfile=false && pnpm --filter @cos/api build
     startCommand: pnpm --filter @cos/api start
     envVars:
       - key: API_PORT
