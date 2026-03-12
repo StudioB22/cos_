@@ -28,6 +28,18 @@ export class RealtimeService {
     private readonly store: InMemoryRealtimeStore,
   ) {}
 
+  private createSystemMessage(roomName: string, authorAlias: string, content: string): RoomMessage {
+    return {
+      id: crypto.randomUUID(),
+      roomName,
+      authorAlias,
+      content,
+      smiley: null,
+      createdAt: new Date().toISOString(),
+      kind: 'system',
+    };
+  }
+
   joinRoom(params: {
     socketId: string;
     userId: string;
@@ -46,20 +58,68 @@ export class RealtimeService {
       throw new AppError('ROOM_FORBIDDEN', 'Alias cannot access this room.', 403);
     }
 
-    const previousRoomName = this.store.joinRoom(params.socketId, alias.pseudo, roomName);
+    const transition = this.store.joinRoom(params.socketId, alias.pseudo, roomName);
+
+    if (
+      transition.previousRoomName &&
+      transition.previousRoomName !== roomName &&
+      transition.previousRoomLastLeave
+    ) {
+      this.store.appendRoomMessage(
+        transition.previousRoomName,
+        this.createSystemMessage(
+          transition.previousRoomName,
+          alias.pseudo,
+          `${alias.pseudo} a quitte le salon.`,
+        ),
+      );
+    }
+
+    if (transition.firstJoinInRoom) {
+      this.store.appendRoomMessage(
+        roomName,
+        this.createSystemMessage(roomName, alias.pseudo, `${alias.pseudo} entre dans le salon.`),
+      );
+    }
 
     return {
-      previousRoomName,
+      previousRoomName: transition.previousRoomName,
       roomState: this.getRoomState(roomName),
     };
   }
 
   leaveRoom(socketId: string): string | null {
-    return this.store.leaveRoom(socketId);
+    const transition = this.store.leaveRoom(socketId);
+
+    if (transition.roomName && transition.alias && transition.lastAliasLeftRoom) {
+      this.store.appendRoomMessage(
+        transition.roomName,
+        this.createSystemMessage(
+          transition.roomName,
+          transition.alias,
+          `${transition.alias} a quitte le salon.`,
+        ),
+      );
+    }
+
+    return transition.roomName;
   }
 
   disconnect(socketId: string): string | null {
-    return this.store.disconnect(socketId);
+    const transition = this.store.disconnect(socketId);
+
+    if (transition.roomName && transition.alias && transition.lastAliasLeftRoom) {
+      this.store.appendRoomMessage(
+        transition.roomName,
+        this.createSystemMessage(
+          transition.roomName,
+          transition.alias,
+          `${transition.alias} a quitte le salon.`,
+        ),
+      );
+    }
+
+    return transition.roomName;
   }
 
   getRoomState(roomName: string): RoomState {
@@ -174,8 +234,14 @@ export class RealtimeService {
     return this.store.removeIgnore(alias.pseudo, normalizePseudo(params.ignoredAlias));
   }
 
-  getIgnoredAliases(alias: string): string[] {
-    return this.store.getIgnoredAliases(alias);
+  getIgnoredAliases(params: { userId: string; aliasPseudo: string }): string[] {
+    const alias = this.aliasRepository.findByPseudo(normalizePseudo(params.aliasPseudo));
+
+    if (!alias || alias.userId !== params.userId) {
+      throw new AppError('ALIAS_NOT_FOUND', 'Alias does not belong to the current session.', 404);
+    }
+
+    return this.store.getIgnoredAliases(alias.pseudo);
   }
 
   isIgnoring(alias: string, potentialSender: string): boolean {

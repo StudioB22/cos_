@@ -202,7 +202,10 @@ export const registerRealtimeHandlers = (io: Server, context: AppContext) => {
     socket.on('ignore:list', (payload, ack: SocketAck<{ ignoredAliases: string[] }>) => {
       try {
         const input = ignoreStateSocketSchema.parse(payload);
-        const ignoredAliases = context.realtimeService.getIgnoredAliases(input.alias);
+        const ignoredAliases = context.realtimeService.getIgnoredAliases({
+          userId: socket.data.userId as string,
+          aliasPseudo: input.alias,
+        });
         ack({ ok: true, data: { ignoredAliases } });
       } catch (error) {
         ack(toSocketError(error));
