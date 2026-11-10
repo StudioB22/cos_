@@ -15,18 +15,22 @@
 - Round 3 on `e4ea977` (verify 8862871, e4ea977): 2 fixed · 1 accepted (the squash body carries the `fix(api)` and `build(docker)` lines) · new Must 0 · **Push gate: open**
 - Optional second review (owner's OpenAI account): ChatGPT/Codex not run (never a gate step)
 
-## Pre-merge gate (head SHA e4ea977)
+## Pre-merge gate (head SHA 59aeebd)
 
-| Step        | Result                                                                                                                                                                                                            |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 CI mirror | n/a: the PR deletes every workflow; former jobs → `just lint` (pnpm lint, typecheck), `just test` (unit, integration, realtime, build), `sonarqube.yml` → `just gate` (ADR-0002)                                  |
-| 1 Tests     | ✅ API 14 unit/integration/realtime · ✅ web 2 unit · ✅ 63 + 31 wiring cases · E2E deferred                                                                                                                      |
-| 2 Coverage  | tests API 80.67 % stmts / 91.09 % branches / 86 % funcs / 80.67 % lines (floor 80) · web 0 % (#4, `WARNING` in the gate) · docs ⏸ deferred to the pre-merge run (`--push`, no counter yet: `WARNING` in the gate) |
-| 3 SonarQube | ⏸ deferred to the pre-merge run (`--push`; key `cos_`, first scan creates the project)                                                                                                                            |
-| 4 Secrets   | ✅ gitleaks clean (origin/main..HEAD) · no tracked .env (`.env.example` only) · diff read: nothing sensitive (SonarQube token read from a file, never echoed)                                                     |
-| 5 E2E/smoke | ⏸ deferred to the pre-merge run (`--push`); the API image was built and run offline by hand: starts, healthy, uid 1000, clean SIGTERM stop                                                                        |
+Run on the pushed head with `SONAR_TOKEN=… mise x -- just gate` (rc 0), after the `--push` run on
+e4ea977; 59aeebd differs from it by the report, the log figures and the `console.error` spy only.
 
-- Gate: `--push`: **pre-push green** — `just check` passed (rc 0), SonarQube, E2E and doc coverage deferred (never GREEN)
+| Step        | Result                                                                                                                                                                                                                 |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 CI mirror | n/a: the PR deletes every workflow; former jobs → `just lint` (pnpm lint, typecheck), `just test` (unit, integration, realtime, build), `sonarqube.yml` → `just gate` (ADR-0002)                                       |
+| 1 Tests     | ✅ API 14 unit/integration/realtime · ✅ web 2 unit · ✅ 63 + 31 wiring cases                                                                                                                                          |
+| 2 Coverage  | tests API 80.67 % stmts / 91.09 % branches / 86 % funcs / 80.67 % lines (floor 80) · web 0 % (#4, `WARNING: web coverage floor not run`) · docs ⚠️ not run (`WARNING: documentation coverage not run`, no counter yet) |
+| 3 SonarQube | ✅ `QUALITY GATE STATUS: PASSED` (key `cos_`, first scan created the project; one lcov path unresolved, `src/app/express.d.ts`, a type-only file)                                                                      |
+| 4 Secrets   | ✅ gitleaks clean (origin/main..HEAD and the full history) · no tracked .env (`.env.example` only) · diff read: nothing sensitive (SonarQube token read from a file, never echoed)                                     |
+| 5 E2E/smoke | ✅ 1 Playwright smoke journey on the local production build · `trivy config` clean · `trivy image` ⚠️ report-only (`WARNING … #6`) · QA pass: none, no staging tier                                                    |
+
+- Attestation: `attest.sh write gate 59aeebd` recorded (signed note, commit status `gate` = success); `attest.sh verify gate` answers `no .github/allowed_signers on origin/main` until this PR lands (bootstrap, ADR-0002).
+- Gate: **GREEN with three waived or not-run steps** (trivy image blocking #6, documentation coverage, web floor #4) and the attestation not verifiable before the merge → the owner's merge question (`common.md` § Attestation and merge), `MERGE_GATE_WAIVER` on an explicit yes only
 
 ## 🔴 Must Have
 
