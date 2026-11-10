@@ -12,32 +12,16 @@ import type { Server } from 'socket.io';
 
 import type { AppContext } from '../../../app/context.js';
 import { sessionCookieName } from '../../../config/session.js';
-import { AppError } from '../../../shared/http/app-error.js';
+import { toApiError } from '../../../shared/http/to-api-error.js';
 
 type SocketSuccess<T> = { ok: true; data: T };
 type SocketFailure = { ok: false; error: ApiError };
 type SocketAck<T> = (payload: SocketSuccess<T> | SocketFailure) => void;
 
-const toSocketError = (error: unknown): SocketFailure => {
-  if (error instanceof AppError) {
-    return {
-      ok: false,
-      error: {
-        code: error.code,
-        message: error.message,
-        details: error.details,
-      },
-    };
-  }
-
-  return {
-    ok: false,
-    error: {
-      code: 'INTERNAL_ERROR',
-      message: error instanceof Error ? error.message : 'Unknown realtime error',
-    },
-  };
-};
+const toSocketError = (error: unknown): SocketFailure => ({
+  ok: false,
+  error: toApiError(error).body,
+});
 
 const emitPresence = (io: Server, context: AppContext, roomName: string) => {
   io.to(roomName).emit('presence:update', context.realtimeService.getRoomState(roomName).occupants);

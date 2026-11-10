@@ -1,0 +1,7 @@
+# Semgrep (skill local-ci): the tests and the generated trees are not shipped sources.
+node_modules/
+dist/
+coverage/
+apps/api/test/
+**/*.test.ts
+**/*.e2e.ts

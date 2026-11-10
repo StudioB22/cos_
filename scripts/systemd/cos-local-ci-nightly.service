@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly local CI of COS_: just nightly, tier L3 (#2)
+OnFailure=cos-local-ci-nightly-failed.service
+
+[Service]
+Type=oneshot
+# The user manager's PATH has no ~/.local/bin, where mise and sonar-scanner live; mise brings the pinned tools.
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=%h/Documents/02_personal/portfolio/cos_
+ExecStart=%h/.local/bin/mise x -- just nightly

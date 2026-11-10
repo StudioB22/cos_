@@ -1,0 +1,45 @@
+# osv-scanner waivers (just security, skill local-ci, #2): one entry per advisory, never per package, so a
+# new advisory on the same package is red again. Every entry names its follow-up issue and expires: after
+# until the finding is red again. All are development dependencies of the test toolchain (vitest 3,
+# its tinypool / @vitest/mocker / esbuild tree, the glob and minimatch trees of eslint and tailwind) except
+# zod 3 (runtime, fixed in zod 4 only: a major with a contract-wide migration). Issue: #5.
+
+[[IgnoredVulns]]
+id = "GHSA-82fw-gwwq-j7x9"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "vitest / @vitest/mocker 3.2.7, test toolchain, fixed in vitest 4, #5"
+
+[[IgnoredVulns]]
+id = "GHSA-qxg6-89mg-rqv8"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "@vitest/mocker 3.2.7, test toolchain, #5"
+
+[[IgnoredVulns]]
+id = "GHSA-g7r4-m6w7-qqqr"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "esbuild 0.27.7 dev server, development only, #5"
+
+[[IgnoredVulns]]
+id = "GHSA-3g3m-2fjr-6pw4"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "glob 10.5.0, eslint / tailwind toolchain, #5"
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "minimatch 9 and 10, eslint / tailwind toolchain, #5"
+
+[[IgnoredVulns]]
+id = "GHSA-5gmw-xhrv-c9v3"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "tinypool 1.1.1, vitest worker pool, fixed in vitest 4, #5"
+
+[[IgnoredVulns]]
+id = "GHSA-85c8-ppgw-ccpr"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "tinypool 1.1.1, vitest worker pool, fixed in vitest 4, #5"
+
+[[IgnoredVulns]]
+id = "GHSA-mrhx-c7xc-m3w5"
+effectiveUntil = 2026-12-10T00:00:00Z
+reason = "zod 3.25.76 runtime, fixed in zod 4 (major, contract migration), #5"

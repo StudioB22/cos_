@@ -52,3 +52,12 @@ export const createTestHarness = () => {
     },
   };
 };
+
+/** The Set-Cookie header of a session response, as a list (never undefined under strict indexing). */
+export const sessionCookies = (response: {
+  headers: Record<string, string | string[] | undefined>;
+}): string[] => {
+  const header = response.headers['set-cookie'];
+  if (!header) throw new Error('Response carries no Set-Cookie header.');
+  return Array.isArray(header) ? header : [header];
+};

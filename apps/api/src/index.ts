@@ -10,8 +10,14 @@ runMigrations(database);
 runSeeds(database);
 
 const context = createAppContext(database, env);
-const { httpServer } = createApp(context);
+const { httpServer, io } = createApp(context);
 
 httpServer.listen(env.API_PORT, () => {
   console.log(`COS_ API listening on http://localhost:${env.API_PORT}`);
+});
+
+// node runs as PID 1 in the image: without this handler `docker stop` waits for the kill, and
+// io.close() also drops the websockets that would keep httpServer.close() waiting.
+process.on('SIGTERM', () => {
+  io.close(() => process.exit(0));
 });

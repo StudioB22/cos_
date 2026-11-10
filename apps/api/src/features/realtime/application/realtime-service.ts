@@ -1,11 +1,15 @@
 import type { DirectMessage, RoomMessage, RoomState, SmileyCode } from '@cos/shared';
 
 import { AppError } from '../../../shared/http/app-error.js';
-import { normalizePseudo, normalizeRoomName, sanitizeMessage } from '../../../shared/security/text.js';
+import {
+  normalizePseudo,
+  normalizeRoomName,
+  sanitizeMessage,
+} from '../../../shared/security/text.js';
 import { WindowRateLimiter } from '../../../shared/security/window-rate-limiter.js';
 import type { AliasRepository } from '../../aliases/application/alias-repository.js';
 import type { RoomRepository } from '../../rooms/application/room-repository.js';
-import { InMemoryRealtimeStore } from '../infrastructure/in-memory-realtime-store.js';
+import type { InMemoryRealtimeStore } from '../infrastructure/in-memory-realtime-store.js';
 
 export class RealtimeService {
   private readonly chatLimiter = new WindowRateLimiter(
@@ -28,12 +32,10 @@ export class RealtimeService {
     private readonly store: InMemoryRealtimeStore,
   ) {}
 
-  joinRoom(params: {
-    socketId: string;
-    userId: string;
-    aliasPseudo: string;
-    roomName: string;
-  }): { roomState: RoomState; previousRoomName: string | null } {
+  joinRoom(params: { socketId: string; userId: string; aliasPseudo: string; roomName: string }): {
+    roomState: RoomState;
+    previousRoomName: string | null;
+  } {
     const alias = this.aliasRepository.findByPseudo(normalizePseudo(params.aliasPseudo));
 
     if (!alias || alias.userId !== params.userId) {
@@ -116,7 +118,11 @@ export class RealtimeService {
     const sender = this.aliasRepository.findByPseudo(normalizePseudo(params.fromAlias));
 
     if (!sender || sender.userId !== params.userId) {
-      throw new AppError('ALIAS_NOT_FOUND', 'Sender alias does not belong to the current session.', 404);
+      throw new AppError(
+        'ALIAS_NOT_FOUND',
+        'Sender alias does not belong to the current session.',
+        404,
+      );
     }
 
     const recipient = this.aliasRepository.findByPseudo(normalizePseudo(params.toAlias));

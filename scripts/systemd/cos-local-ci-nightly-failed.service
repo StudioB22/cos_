@@ -1,0 +1,6 @@
+[Unit]
+Description=Desktop notification when the COS_ nightly local CI fails
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/notify-send --urgency=critical "COS_ local CI nightly failed" "journalctl --user -u cos-local-ci-nightly.service"
