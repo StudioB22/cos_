@@ -1,7 +1,7 @@
 import { io as createClient } from 'socket.io-client';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { createTestHarness } from '../helpers/create-test-harness.js';
+import { createTestHarness, sessionCookies } from '../helpers/create-test-harness.js';
 
 const getCookieHeader = (setCookie: string[]) =>
   setCookie.map((entry) => entry.split(';')[0]).join('; ');
@@ -29,11 +29,19 @@ describe('realtime chat and private-room sad path', () => {
       .send({ email: 'beta@cos.dev' })
       .expect(201);
 
-    const alphaCookie = getCookieHeader(alphaSession.headers['set-cookie']);
-    const betaCookie = getCookieHeader(betaSession.headers['set-cookie']);
+    const alphaCookie = getCookieHeader(sessionCookies(alphaSession));
+    const betaCookie = getCookieHeader(sessionCookies(betaSession));
 
-    await harness.request.post('/aliases').set('Cookie', alphaCookie).send({ pseudo: 'Alpha' }).expect(201);
-    await harness.request.post('/aliases').set('Cookie', betaCookie).send({ pseudo: 'Beta' }).expect(201);
+    await harness.request
+      .post('/aliases')
+      .set('Cookie', alphaCookie)
+      .send({ pseudo: 'Alpha' })
+      .expect(201);
+    await harness.request
+      .post('/aliases')
+      .set('Cookie', betaCookie)
+      .send({ pseudo: 'Beta' })
+      .expect(201);
 
     await harness.request
       .post('/salons')

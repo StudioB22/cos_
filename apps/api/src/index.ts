@@ -15,3 +15,8 @@ const { httpServer } = createApp(context);
 httpServer.listen(env.API_PORT, () => {
   console.log(`COS_ API listening on http://localhost:${env.API_PORT}`);
 });
+
+// node runs as PID 1 in the image: without this handler `docker stop` waits for the kill.
+process.on('SIGTERM', () => {
+  httpServer.close(() => process.exit(0));
+});
