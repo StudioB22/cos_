@@ -7,7 +7,9 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.unit.test.ts'],
     coverage: {
-      reporter: ['text', 'html'],
+      include: ['src/**'],
+      exclude: ['src/**/*.test.ts', 'src/**/*.e2e.ts'],
+      reporter: ['text', 'html', 'lcov'],
       reportsDirectory: '../../coverage/web',
     },
   },

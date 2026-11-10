@@ -1,0 +1,21 @@
+# Dependabot keeps the npm dependencies and the API base image current (no GitHub Actions left to
+# watch, ADR-0002). The commit-message prefix keeps the squashed merge titles Conventional.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      npm:
+        patterns: ['*']
+  - package-ecosystem: docker
+    directory: /apps/api
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build
+      include: scope

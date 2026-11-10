@@ -1,13 +1,12 @@
 ## Scope
-- 
+
+-
 
 ## Checks
-- [ ] `pnpm lint`
-- [ ] `pnpm typecheck`
-- [ ] `pnpm test:unit`
-- [ ] `pnpm test:integration`
-- [ ] `pnpm test:realtime`
-- [ ] `pnpm build`
+
+- [ ] `just check` green before every push (pre-push hook)
+- [ ] `just gate` attested the head commit (status `gate`), merged with `just merge <pr>`
 
 ## Notes
-- 
+
+-

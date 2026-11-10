@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly local CI of COS_ (catches up after the PC was off)
+
+[Timer]
+OnCalendar=*-*-* 03:50:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

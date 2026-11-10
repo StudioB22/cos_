@@ -1,9 +1,11 @@
 # ADR 0001 - Monorepo and Modular Hexagonal Architecture
 
 ## Status
+
 Accepted
 
 ## Context
+
 COS_ is a portfolio-grade full-stack application with a retro UI, real-time chat, and a small persistence layer.
 The project needs:
 
@@ -13,6 +15,7 @@ The project needs:
 - a deploy path split across Vercel and Render.
 
 ## Decision
+
 Use a `pnpm` monorepo with three top-level packages:
 
 - `apps/web` for the React/Tailwind client;
@@ -33,6 +36,7 @@ On the frontend, use a feature-first layout:
 - `app` for providers, routing, and application shell.
 
 ## Consequences
+
 - The codebase is easy to explain and demo.
 - Feature boundaries stay explicit without introducing unnecessary microservices.
 - Shared schemas reduce contract drift.

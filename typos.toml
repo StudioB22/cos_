@@ -1,0 +1,22 @@
+# typos (skill local-ci, L0 on the staged files, L1 on the whole repository, #2). No French
+# dictionary: the lockfiles are excluded and the French words of the retro UI and seeds are
+# allow-listed (apps/web, apps/api/src/shared/db/public-room-seed.ts).
+[files]
+extend-exclude = [
+  "mise.lock",
+  "pnpm-lock.yaml",
+]
+
+[default.extend-words]
+annonces = "annonces"
+Approches = "Approches"
+controles = "controles"
+createur = "createur"
+entre = "entre"
+Fonctions = "Fonctions"
+Guitares = "Guitares"
+Limite = "Limite"
+Persistance = "Persistance"
+projets = "projets"
+quitte = "quitte"
+salon = "salon"
