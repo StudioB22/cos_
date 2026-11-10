@@ -66,7 +66,7 @@ run 0 "staging attested from the clone" "deploy/staging recorded" sh scripts/att
 cd "$repo"
 run 0 "staging note fetched back" "deploy/staging verified on $first" sh scripts/attest.sh verify deploy/staging HEAD
 
-# Concurrent push (#372): a pre-push hook makes the clone push its gate note between our fetch and
+# Concurrent push (agents-skills#372): a pre-push hook makes the clone push its gate note between our fetch and
 # our push, once; write refetches, re-adds its note on top and retries, keeping the clone's note.
 cd "$work/clone" && git commit -q --allow-empty -m other && git push -q origin main
 other=$(git rev-parse HEAD)

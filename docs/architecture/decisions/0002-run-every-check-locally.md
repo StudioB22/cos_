@@ -1,4 +1,4 @@
-# ADR-0002 — Run every check locally: no GitHub workflow
+# ADR 0002 - Run every check locally: no GitHub workflow
 
 Status: **accepted** by the owner on 2026-11-10 (#2).
 

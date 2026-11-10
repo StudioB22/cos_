@@ -14,7 +14,7 @@ environment changes and the state of the gates.
   nightly, lint, test, security, secrets, merge, setup), `mise.toml` + `mise.lock` (Node 22.23.4),
   `lefthook.yml`, `typos.toml`, `.semgrepignore`, `osv-scanner.toml`, `.nvmrc`,
   `sonar-project.properties` (self-hosted instance), the five `scripts/*.sh`
-  (attestation, commit message, cassettes, their 31 + 62 wiring cases), `scripts/systemd/cos-local-ci-nightly.*`,
+  (attestation, commit message, cassettes, their 31 + 63 wiring cases), `scripts/systemd/cos-local-ci-nightly.*`,
   `.github/allowed_signers`, `.github/branch-protection.md`, `.github/dependabot.yml`,
   `pnpm-lock.yaml`. Removed: `.github/workflows/` (`ci.yml`, `sonarqube.yml`). `docs/adr/0001` moved
   to `docs/architecture/decisions/` (skill `conception-naming`). Fixes needed for a green L1 on the
@@ -24,10 +24,10 @@ environment changes and the state of the gates.
   errors mapped to HTTP 400 (the integration suite expected it), the web `@/` tsconfig paths and the
   Playwright `webServer` (same content as PR #1), `onlyBuiltDependencies` for `better-sqlite3` and
   `esbuild`, the API Dockerfile installing from the lockfile and running as `node`. Coverage: API
-  80.5 % lines with two new unit suites (alias service, env), floor 80 % enforced; web 0 % (#4).
+  80.4 % lines with two new unit suites (alias service, env), floor 80 % enforced; web 0 % (#4).
   Follow-ups: #3 prettier on the tree, #4 web coverage, #5 toolchain advisories waived until
   2026-12-10, #6 multi-stage API image (trivy image report-only meanwhile).
-- **Visibility: public, decided** (applied with `gh repo edit --visibility public` on the owner's
+- **Visibility: public, decided** (to apply with `gh repo edit --visibility public` on the owner's
   explicit yes before the merge; agents-skills ADR-0005, owner MCDA A 445/500 against C public after
   PR #1 290 and B private 260). Public Release Checklist: gitleaks on the full history (8 commits,
   no leak), `.env` ignored, `.env.example` and compose hold placeholders only, no development
