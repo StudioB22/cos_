@@ -24,7 +24,7 @@ environment changes and the state of the gates.
   errors mapped to HTTP 400 (the integration suite expected it), the web `@/` tsconfig paths and the
   Playwright `webServer` (same content as PR #1), `onlyBuiltDependencies` for `better-sqlite3` and
   `esbuild`, the API Dockerfile installing from the lockfile and running as `node`. Coverage: API
-  80.4 % lines with two new unit suites (alias service, env), floor 80 % enforced; web 0 % (#4).
+  80.7 % lines with three new unit suites (alias service, env, toApiError), floor 80 % enforced; web 0 % (#4).
   Follow-ups: #3 prettier on the tree, #4 web coverage, #5 toolchain advisories waived until
   2026-12-10, #6 multi-stage API image (trivy image report-only meanwhile).
 - **Visibility: public, decided** (to apply with `gh repo edit --visibility public` on the owner's

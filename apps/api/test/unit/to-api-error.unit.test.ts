@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
 import { AppError } from '../../src/shared/http/app-error.js';
@@ -25,8 +25,12 @@ describe('toApiError', () => {
     expect(result.body.details).toMatchObject({ fieldErrors: { pseudo: expect.any(Array) } });
   });
 
-  it('answers 500 without echoing the internal message', () => {
+  it('answers 500 without echoing the internal message, which goes to the server log', () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const result = toApiError(new Error('sqlite: disk I/O error at /app/data'));
+
+    expect(log).toHaveBeenCalledOnce();
+    log.mockRestore();
 
     expect(result).toEqual({
       status: 500,
